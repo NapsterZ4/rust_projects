@@ -1,34 +1,46 @@
-use rand::Rng;
+use std::*;
+use std::ptr::null;
+use std::arch::x86::_mm256_blend_epi16;
+
+const SEED_SIZE: i32 = 16;
+const GENERATOR: usize = 223;
+const MODULUS: usize = 36389;
+const SEED: &str = "1001100001110001";
+
+// const function_l: = |x| ((x.pow(2) - (2*x)) + 1);
+
 
 fn main() {
-    let message: &str = "Encrypt, this message";
-    let key: &[u8] = b"napster";
-    let length_message: usize = message.chars().count();
-    let password = random_generator(key, length_message);
-
-    // Convert to bytes
-    let bytes_message = convert_bytes(message);
-    let bytes_password = convert_bytes(password.as_str());
-
-    // Apply xor
-    let xor_message = xor(bytes_message, bytes_password);
-
-    // Convert xor to String
-    let string_message = convert_string(xor_message);
-
-    println!("XOR String: {:?}", string_message);
-
-    // Convert Xor message to bytes
-
-    let decrypt_message = xor(string_message.as_bytes(), bytes_password);
-    let decrypt_string_message = convert_string(decrypt_message);
-
-    println!("Decrypt message: {:?}", decrypt_string_message);
+    controller();
 }
 
-fn convert_bytes(message: &str) -> &[u8]{
-   let message_bytes = message.as_bytes();
-    message_bytes
+fn l(k: i32) -> i32 {
+    (k.pow(2) - 2(k) + 7)
+}
+
+fn h_fn(first_half: &str, second_half: &str){
+    let mut mod_exp: i8 = 2.pow(first_half.parse().unwrap()) % MODULUS;
+    let mut hard_code_bit: i32 = 0;
+
+    for i in first_half {
+        hard_code_bit = (hard_code_bit ^ ((first_half[i]) & (second_half[i]))) % 2;
+    }
+
+    mod_exp; second_half; str(hard_code_bit)
+}
+
+
+fn g_fn(initial_seed: &str){
+    let mut binary_string: &str = initial_seed;
+    let mut result: &str = "";
+    let mut first_half: &str = "";
+    let mut second_half: &str = "";
+
+    for i in l(SEED_SIZE){
+        first_half = &binary_string[..(binary_string.len()) / 2];
+        second_half = &binary_string[(binary_string.len()) / 2 ..];
+        binary_string = h_fn(first_half, second_half);
+    }
 }
 
 fn xor(message: &[u8], key: &[u8]) -> Vec<u8> {
@@ -41,19 +53,9 @@ fn xor(message: &[u8], key: &[u8]) -> Vec<u8> {
     xor.to_vec()
 }
 
-fn convert_string(message: Vec<u8>) -> String{
-    String::from_utf8(message).unwrap()
-}
 
-fn random_generator(key: &[u8], length: usize) -> String {
-    let mut rng = rand::thread_rng();
 
-    let password: String = (0..length)
-        .map(|_| {
-            let idx = rng.gen_range(0, key.len());
-            key[idx] as char
-        })
-        .collect();
 
-    password
+fn controller()  {
+
 }
