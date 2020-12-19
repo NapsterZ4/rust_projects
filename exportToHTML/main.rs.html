@@ -1,0 +1,72 @@
+<html>
+<head>
+<title>main.rs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #ff79c6;}
+.s1 { color: #a6accd;}
+.s2 { color: #f8f8f2;}
+.s3 { color: #bd93f9;}
+.s4 { color: #f1fa8c;}
+.s5 { color: #20999d; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#292d3e">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.rs</font>
+</center></td></tr></table>
+<pre><span class="s0">use </span><span class="s2">std</span><span class="s0">::*</span><span class="s1">;</span>
+
+<span class="s0">const </span><span class="s2">SEED_SIZE</span><span class="s0">: </span><span class="s2">i32 </span><span class="s0">= </span><span class="s3">16</span><span class="s1">;</span>
+<span class="s0">const </span><span class="s2">GENERATOR</span><span class="s0">: </span><span class="s2">usize </span><span class="s0">= </span><span class="s3">223</span><span class="s1">;</span>
+<span class="s0">const </span><span class="s2">MODULUS</span><span class="s0">: </span><span class="s2">i32 </span><span class="s0">= </span><span class="s3">36389</span><span class="s1">;</span>
+<span class="s0">const </span><span class="s2">SEED</span><span class="s0">: &amp;</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">] </span><span class="s0">= </span><span class="s4">&quot;1001100001110001&quot;</span><span class="s1">.</span><span class="s2">as_bytes</span><span class="s1">();</span>
+
+
+<span class="s0">fn </span><span class="s2">h_fn</span><span class="s0">&lt;</span><span class="s5">'a</span><span class="s0">&gt;</span><span class="s1">(</span><span class="s2">first_half</span><span class="s0">: &amp;</span><span class="s5">'a</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">], </span><span class="s2">second_half</span><span class="s0">: &amp;</span><span class="s5">'a</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">]) </span><span class="s0">-&gt; &amp;</span><span class="s5">'a</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">] {</span>
+    <span class="s0">let mut </span><span class="s2">mod_exp</span><span class="s0">: </span><span class="s2">i32 </span><span class="s0">= </span><span class="s3">2_i32</span><span class="s1">.</span><span class="s2">pow</span><span class="s1">(</span><span class="s2">first_half</span><span class="s1">) </span><span class="s0">% </span><span class="s2">MODULUS</span><span class="s1">;</span>
+    <span class="s0">let mut </span><span class="s2">hard_code_bit</span><span class="s0">: </span><span class="s2">u8 </span><span class="s0">= </span><span class="s3">0</span><span class="s1">;</span>
+
+    <span class="s0">for </span><span class="s2">i </span><span class="s0">in </span><span class="s3">0</span><span class="s0">..</span><span class="s2">first_half</span><span class="s1">.</span><span class="s2">len</span><span class="s1">() {</span>
+        <span class="s2">hard_code_bit </span><span class="s0">= </span><span class="s2">hard_code_bit </span><span class="s0">^ </span><span class="s1">((</span><span class="s2">first_half</span><span class="s1">[</span><span class="s2">i</span><span class="s1">]) </span><span class="s0">&amp; </span><span class="s1">(</span><span class="s2">second_half</span><span class="s1">[</span><span class="s2">i</span><span class="s1">])) </span><span class="s0">% </span><span class="s3">2</span><span class="s1">;</span>
+    <span class="s1">}</span>
+
+    <span class="s2">mod_exp  </span><span class="s0">+ </span><span class="s2">second_half </span><span class="s0">+ </span><span class="s2">hard_code_bit</span>
+<span class="s1">}</span>
+
+<span class="s0">fn </span><span class="s2">g_fn</span><span class="s1">(</span><span class="s2">initial_seed</span><span class="s0">: &amp;</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">]) </span><span class="s0">-&gt; &amp;</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">] {</span>
+    <span class="s0">let mut </span><span class="s2">binary_string</span><span class="s0">: &amp;</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">] </span><span class="s0">= </span><span class="s2">initial_seed</span><span class="s1">;</span>
+    <span class="s0">let mut </span><span class="s2">result</span><span class="s0">: &amp;</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">] </span><span class="s0">= </span><span class="s4">b&quot;&quot;</span><span class="s1">;</span>
+
+    <span class="s0">for </span><span class="s2">i </span><span class="s0">in </span><span class="s3">0</span><span class="s0">..</span><span class="s3">10 </span><span class="s1">{</span>
+        <span class="s0">let mut </span><span class="s2">first_half</span><span class="s0">: &amp;</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">] </span><span class="s0">= &amp;</span><span class="s2">binary_string</span><span class="s1">[</span><span class="s0">..</span><span class="s1">(</span><span class="s2">binary_string</span><span class="s1">.</span><span class="s2">len</span><span class="s1">()) </span><span class="s0">/ </span><span class="s3">2</span><span class="s1">];</span>
+        <span class="s0">let mut </span><span class="s2">second_half</span><span class="s0">: &amp;</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">] </span><span class="s0">= &amp;</span><span class="s2">binary_string</span><span class="s1">[(</span><span class="s2">binary_string</span><span class="s1">.</span><span class="s2">len</span><span class="s1">()) </span><span class="s0">/ </span><span class="s3">2</span><span class="s0">..</span><span class="s1">];</span>
+        <span class="s2">binary_string </span><span class="s0">= </span><span class="s2">h_fn</span><span class="s1">(</span><span class="s2">first_half</span><span class="s1">, </span><span class="s2">second_half</span><span class="s1">);</span>
+        <span class="s2">result </span><span class="s0">+= </span><span class="s2">binary_string</span><span class="s1">[</span><span class="s0">-</span><span class="s3">1</span><span class="s1">];</span>
+        <span class="s2">binary_string </span><span class="s0">= </span><span class="s2">binary_string</span><span class="s1">[</span><span class="s0">..-</span><span class="s3">1</span><span class="s1">];</span>
+    <span class="s1">}</span>
+
+    <span class="s2">result</span>
+<span class="s1">}</span>
+
+<span class="s0">fn </span><span class="s2">xor</span><span class="s1">(</span><span class="s2">message</span><span class="s0">: &amp;</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">], </span><span class="s2">key</span><span class="s0">: &amp;</span><span class="s1">[</span><span class="s2">u8</span><span class="s1">]) </span><span class="s0">-&gt; </span><span class="s2">Vec</span><span class="s0">&lt;</span><span class="s2">u8</span><span class="s0">&gt; </span><span class="s1">{</span>
+    <span class="s0">let mut </span><span class="s2">xor</span><span class="s0">: </span><span class="s2">Vec</span><span class="s0">&lt;</span><span class="s2">u8</span><span class="s0">&gt; = </span><span class="s2">Vec</span><span class="s0">::</span><span class="s2">new</span><span class="s1">();</span>
+
+    <span class="s0">for </span><span class="s2">n </span><span class="s0">in </span><span class="s3">0</span><span class="s0">..</span><span class="s2">message</span><span class="s1">.</span><span class="s2">len</span><span class="s1">() {</span>
+        <span class="s2">xor</span><span class="s1">.</span><span class="s2">push</span><span class="s1">(</span><span class="s2">message</span><span class="s1">[</span><span class="s2">n</span><span class="s1">] </span><span class="s0">^ </span><span class="s2">key</span><span class="s1">[</span><span class="s2">n</span><span class="s1">]);</span>
+    <span class="s1">}</span>
+
+    <span class="s2">xor</span><span class="s1">.</span><span class="s2">to_vec</span><span class="s1">()</span>
+<span class="s1">}</span>
+
+<span class="s0">fn </span><span class="s2">controller</span><span class="s1">() {</span>
+
+<span class="s1">}</span>
+
+<span class="s0">fn </span><span class="s2">main</span><span class="s1">() {</span>
+    <span class="s2">controller</span><span class="s1">();</span>
+<span class="s1">}</span></pre>
+</body>
+</html>
